@@ -21,12 +21,4 @@ export class InMemoryUserRepository implements UserRepository {
   async findAll(): Promise<User[]> {
     return Array.from(this.users.values());
   }
-
-  clear(): void {
-    this.users.clear();
-  }
-
-  seed(users: User[]): void {
-    users.forEach(user => this.users.set(user.getId(), user));
-  }
 }

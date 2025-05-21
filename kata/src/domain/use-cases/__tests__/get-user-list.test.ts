@@ -34,9 +34,10 @@ describe('GetUserList', () => {
 
   it('should return a list of users', async () => {
     const result = await getUserList.execute();
-
-    expect(mockUserRepository.findAll).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockUsers);
+    
+    // Solo verificamos el resultado esperado, no cómo se obtuvo
     expect(result).toHaveLength(2);
+    expect(result[0].getName()).toBe('Aytor');
+    expect(result[1].getName()).toBe('David Parras');
   });
 });

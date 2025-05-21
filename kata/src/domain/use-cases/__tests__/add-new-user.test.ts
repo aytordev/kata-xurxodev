@@ -2,7 +2,7 @@ import { User } from '../../entities/User';
 import { UserRepository } from '../../repositories/user';
 import { Email } from '../../value-objects/Email';
 import { Password } from '../../value-objects/Password';
-import { AddNewUser, UserAlreadyExistsError } from '../add-new-user';
+import { AddNewUser } from '../add-new-user';
 
 describe('AddNewUser', () => {
   let addNewUser: AddNewUser;
@@ -27,22 +27,23 @@ describe('AddNewUser', () => {
     addNewUser = new AddNewUser(mockUserRepository);
   });
 
+  // No acoplar los test a la implementacion del caso de uso. Validar el estado de salida (success o error)
   it('should add a new user when email is not in use', async () => {
     const result = await addNewUser.execute(newUser);
-
-    expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(newUser.getEmail().toString());
-    expect(mockUserRepository.save).toHaveBeenCalledWith(newUser);
-    expect(result).toEqual(createdUser);
+    
+    // Verificamos que el resultado es el usuario creado con los datos correctos
+    expect(result).toBeInstanceOf(User);
+    expect(result.getName()).toBe('David Parras');
+    expect(result.getEmail().toString()).toBe('david@example.com');
   });
 
-  it('should throw UserAlreadyExistsError when email is already in use', async () => {
+  it('should throw an error when email is already in use', async () => {
+    // Configuramos el mock para que devuelva un usuario existente
     mockUserRepository.findByEmail.mockResolvedValueOnce(createdUser);
 
+    // Verificamos que se lanza la excepción con el mensaje correcto
     await expect(addNewUser.execute(newUser))
       .rejects
-      .toThrow(UserAlreadyExistsError);
-
-    expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(newUser.getEmail().toString());
-    expect(mockUserRepository.save).not.toHaveBeenCalled();
+      .toThrow('User with email david@example.com already exists');
   });
 });

@@ -90,27 +90,4 @@ describe('InMemoryUserRepository', () => {
       expect(users).toEqual(expect.arrayContaining([testUser1, testUser2]));
     });
   });
-
-  describe('clear', () => {
-    it('should remove all users', async () => {
-      await repository.save(testUser1);
-      await repository.save(testUser2);
-
-      repository.clear();
-      const users = await repository.findAll();
-
-      expect(users).toHaveLength(0);
-    });
-  });
-
-  describe('seed', () => {
-    it('should seed multiple users at once', async () => {
-      repository.seed([testUser1, testUser2]);
-
-      const users = await repository.findAll();
-
-      expect(users).toHaveLength(2);
-      expect(users).toEqual(expect.arrayContaining([testUser1, testUser2]));
-    });
-  });
 });
